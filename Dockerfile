@@ -120,10 +120,9 @@ EXPOSE 22
 # See: https://github.com/moby/moby/issues/11185
 # EXPOSE 33478/UDP
 # EXPOSE 49152-65535/UDP
-
-ENTRYPOINT ["./entrypoint.sh"]
 # CMD ["resources/app/main.mjs", "--port=30000", "--headless", "--noupdate",\
 #   "--dataPath=/data"]
-CMD /usr/sbin/sshd -D -e "$@" && resources/app/main.mjs --port=30000 --headless --noupdate --dataPath=/data
+
+ENTRYPOINT ["./entrypoint.sh"]
+CMD /usr/sbin/sshd -D && resources/app/main.mjs --port=30000 --headless --noupdate --dataPath=/data
 HEALTHCHECK --start-period=3m --interval=30s --timeout=5s CMD ./check_health.sh
-# exec /usr/sbin/sshd -D -e "$@"
