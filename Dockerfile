@@ -18,7 +18,7 @@ ARG SSHUSERHOME=/home/mesa
 ARG SSHUSER=mesa
 ARG SSHUSERPASS=mesa:mesa
 
-RUN apk update && apk upgrade && apk add --no-cache openssh openssh-keygen
+RUN apk update && apk upgrade && apk add --no-cache openssh
 
 RUN echo 'PasswordAuthentication yes' >> /etc/ssh/sshd_config
 RUN adduser -s /bin/sh -D ${SSHUSER}
@@ -109,6 +109,7 @@ RUN addgroup --system --gid ${FOUNDRY_UID} foundry \
   sed \
   su-exec \
   tzdata \
+  openssh-keygen \
   && npm install && echo ${VERSION} > image_version.txt
 
 VOLUME ["/data"]
