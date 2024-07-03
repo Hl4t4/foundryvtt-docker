@@ -18,7 +18,7 @@ ARG SSHUSERHOME=/home/mesa
 ARG SSHUSER=mesa
 ARG SSHUSERPASS=mesa:mesa
 
-RUN apk update && apk upgrade && apk add --no-cache openssh
+RUN apk update && apk upgrade && apk add --no-cache openssh openssh-keygen
 
 RUN echo 'PasswordAuthentication yes' >> /etc/ssh/sshd_config
 RUN adduser -s /bin/sh -D ${SSHUSER}
