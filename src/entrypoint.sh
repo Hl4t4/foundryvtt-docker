@@ -17,8 +17,6 @@ LICENSE_FILE="${CONFIG_DIR}/license.json"
 # LOG_NAME used in sourced file
 LOG_NAME="Entrypoint"
 
-# source entrypoint-ssh.sh
-
 # shellcheck source=src/logging.sh
 source logging.sh
 
