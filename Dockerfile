@@ -90,6 +90,7 @@ COPY \
   src/launcher.sh \
   src/logging.sh \
   src/entrypoint-ssh.sh \
+  src/startcmd.sh \
   ./
 RUN ["chmod", "+x", "./entrypoint-ssh.sh"]
 RUN addgroup --system --gid ${FOUNDRY_UID} foundry \
@@ -124,5 +125,5 @@ EXPOSE 22
 #   "--dataPath=/data"]
 
 ENTRYPOINT ["./entrypoint.sh"]
-CMD ["/usr/sbin/sshd", "-D", "-e", "$@", "&&", "resources/app/main.mjs", "--port=30000", "--headless", "--noupdate", "--dataPath=/data"]
+CMD sh ./startcmd.sh
 HEALTHCHECK --start-period=3m --interval=30s --timeout=5s CMD ./check_health.sh
