@@ -13,11 +13,14 @@ ARG SSHUSER=mesa
 ARG SSHUSERPASS=mesa:mesa
 
 
+ARG SSHUSERHOME=/home/mesa 
+ARG SSHUSER=mesa
+ARG SSHUSERPASS=mesa:mesa
 FROM node:${NODE_IMAGE_VERSION} as compile-typescript-stage
 
 RUN apk update && apk upgrade && apk add --no-cache openssh
 
-RUN adduser -h ${SSHUSERHOME} -s /bin/sh -D ${SSHUSER}
+RUN adduser -s /bin/sh -D ${SSHUSER}
 RUN echo -n "${SSHUSERPASS}" | chpasswd
 
 COPY /src/entrypoint-ssh.sh /
