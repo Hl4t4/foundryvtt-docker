@@ -21,7 +21,7 @@ FROM node:${NODE_IMAGE_VERSION} as compile-typescript-stage
 RUN apk update && apk upgrade && apk add --no-cache openssh
 
 RUN echo 'PasswordAuthentication yes' >> /etc/ssh/sshd_config
-RUN echo $(adduser -s /bin/sh -D ${SSHUSER})
+RUN echo $(adduser -s /bin/sh -D test)
 RUN adduser -s /bin/sh -D ${SSHUSER}
 RUN echo -n "${SSHUSERPASS}" | chpasswd
 
