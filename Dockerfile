@@ -16,11 +16,11 @@ FROM node:${NODE_IMAGE_VERSION} as compile-typescript-stage
 
 RUN apk update && apk upgrade && apk add --no-cache openssh
 
-RUN adduser -D -s /bin/sh ${SSHUSER}
-RUN echo ${SSHUSERPASS} | chpasswd
+RUN adduser -h /home/${SSHUSER} -s /bin/sh -D ${SSHUSER}
+RUN echo -n "${SSHUSERPASS}" | chpasswd
 
-CMD ["/usr/sbin/sshd", "-D"]
-
+COPY /src/entrypoint-ssh.sh /
+RUN ["chmod", "+x", "/entrypoint-ssh.sh"]
 EXPOSE 22
 
 WORKDIR /root
