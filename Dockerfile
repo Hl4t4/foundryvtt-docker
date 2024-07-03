@@ -24,8 +24,6 @@ RUN echo 'PasswordAuthentication yes' >> /etc/ssh/sshd_config
 RUN adduser -s /bin/sh -D ${SSHUSER}
 RUN echo -n "${SSHUSERPASS}" | chpasswd
 
-COPY /src/entrypoint-ssh.sh /
-RUN ["chmod", "+x", "/entrypoint-ssh.sh"]
 EXPOSE 22
 
 WORKDIR /root
@@ -99,7 +97,9 @@ COPY \
   src/entrypoint.sh \
   src/launcher.sh \
   src/logging.sh \
+  /src/entrypoint-ssh.sh \
   ./
+RUN ["chmod", "+x", "/entrypoint-ssh.sh"]
 RUN addgroup --system --gid ${FOUNDRY_UID} foundry \
   && adduser --system --uid ${FOUNDRY_UID} --ingroup foundry foundry \
   && apk --update --no-cache add \
