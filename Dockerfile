@@ -108,6 +108,7 @@ RUN addgroup --system --gid ${FOUNDRY_UID} foundry \
 RUN echo 'PasswordAuthentication yes' >> /etc/ssh/sshd_config
 RUN adduser -s /bin/sh -D ${SSHUSER}
 RUN echo -n "${SSHUSERPASS}" | chpasswd
+RUN ssh-keygen -A
 
 VOLUME ["/data"]
 # HTTP Server
