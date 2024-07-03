@@ -117,6 +117,7 @@ RUN ssh-keygen -A
 # Set permissions for /home
 # RUN chown -R ${SSHUSER}:${SSHUSER} /home
 RUN chmod 755 /home
+RUN chmod -R u+rwX,go+rX /home
 
 VOLUME ["/data"]
 # HTTP Server
@@ -131,7 +132,6 @@ EXPOSE 22
 
 
 ENTRYPOINT ["./entrypoint.sh"]
-# CMD sh ./startcmd.sh
 CMD ["resources/app/main.mjs", "--port=30000", "--headless", "--noupdate",\
   "--dataPath=/data"]
 HEALTHCHECK --start-period=3m --interval=30s --timeout=5s CMD ./check_health.sh
