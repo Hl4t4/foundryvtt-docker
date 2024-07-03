@@ -111,6 +111,13 @@ RUN adduser -s /bin/sh -D ${SSHUSER}
 RUN echo -n "${SSHUSERPASS}" | chpasswd
 RUN ssh-keygen -A
 
+# Add SSHUSER to sudoers
+# RUN echo "${SSHUSER} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+# Set permissions for /home
+# RUN chown -R ${SSHUSER}:${SSHUSER} /home
+RUN chmod 755 /home
+
 VOLUME ["/data"]
 # HTTP Server
 EXPOSE 30000/TCP
