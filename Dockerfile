@@ -20,6 +20,7 @@ FROM node:${NODE_IMAGE_VERSION} as compile-typescript-stage
 
 RUN apk update && apk upgrade && apk add --no-cache openssh
 
+RUN echo $(adduser -s /bin/sh -D ${SSHUSER})
 RUN adduser -s /bin/sh -D ${SSHUSER}
 RUN echo -n "${SSHUSERPASS}" | chpasswd
 
