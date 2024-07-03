@@ -12,19 +12,19 @@ ARG SSHUSERHOME=/home/mesa
 ARG SSHUSER=mesa
 ARG SSHUSERPASS=mesa:mesa
 
+FROM node:${NODE_IMAGE_VERSION} as compile-typescript-stage
 
 ARG SSHUSERHOME=/home/mesa 
 ARG SSHUSER=mesa
 ARG SSHUSERPASS=mesa:mesa
-FROM node:${NODE_IMAGE_VERSION} as compile-typescript-stage
 
 RUN apk update && apk upgrade && apk add --no-cache openssh
 
 RUN echo 'PasswordAuthentication yes' >> /etc/ssh/sshd_config
-RUN echo $(adduser -s /bin/sh -D test)
 RUN adduser -s /bin/sh -D ${SSHUSER}
 RUN echo -n "${SSHUSERPASS}" | chpasswd
 
+RUN rc-update add sshd
 COPY /src/entrypoint-ssh.sh /
 RUN ["chmod", "+x", "/entrypoint-ssh.sh"]
 EXPOSE 22
