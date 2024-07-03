@@ -333,6 +333,8 @@ if [ "$1" = "--root-shell" ]; then
   exit $?
 fi
 
+exec /usr/sbin/sshd -D -e "$@"
+
 # drop privileges and handoff to launcher
 log "Starting launcher with uid:gid as ${FOUNDRY_UID}:${FOUNDRY_GID}."
 export CONTAINER_PRESERVE_CONFIG FOUNDRY_ADMIN_KEY FOUNDRY_AWS_CONFIG \
