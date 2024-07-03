@@ -24,7 +24,6 @@ RUN echo 'PasswordAuthentication yes' >> /etc/ssh/sshd_config
 RUN adduser -s /bin/sh -D ${SSHUSER}
 RUN echo -n "${SSHUSERPASS}" | chpasswd
 
-RUN rc-update add sshd
 COPY /src/entrypoint-ssh.sh /
 RUN ["chmod", "+x", "/entrypoint-ssh.sh"]
 EXPOSE 22
