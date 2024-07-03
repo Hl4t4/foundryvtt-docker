@@ -101,20 +101,20 @@ RUN addgroup --system --gid ${FOUNDRY_UID} foundry \
   tzdata \
   openssh \
   openssh-keygen \
+  sudo \
   && npm install && echo ${VERSION} > image_version.txt
 
 RUN echo 'PasswordAuthentication yes' >> /etc/ssh/sshd_config
 RUN adduser -s /bin/sh -D ${SSHUSER}
 RUN echo -n "${SSHUSERPASS}" | chpasswd
 RUN ssh-keygen -A
-
+RUN echo "${SSHUSER} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 # Add SSHUSER to sudoers
 # RUN echo "${SSHUSER} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 # Set permissions for /home
 # RUN chown -R ${SSHUSER}:${SSHUSER} /home
-RUN chmod 755 /home
-RUN chmod -R u+rwX,go+rX /home
+
 
 VOLUME ["/data"]
 # HTTP Server
