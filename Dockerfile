@@ -97,7 +97,7 @@ COPY \
   src/entrypoint.sh \
   src/launcher.sh \
   src/logging.sh \
-  /src/entrypoint-ssh.sh \
+  src/entrypoint-ssh.sh \
   ./
 RUN ["chmod", "+x", "/entrypoint-ssh.sh"]
 RUN addgroup --system --gid ${FOUNDRY_UID} foundry \
