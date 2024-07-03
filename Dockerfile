@@ -14,18 +14,6 @@ ARG SSHUSERPASS=mesa:mesa
 
 FROM node:${NODE_IMAGE_VERSION} as compile-typescript-stage
 
-ARG SSHUSERHOME=/home/mesa 
-ARG SSHUSER=mesa
-ARG SSHUSERPASS=mesa:mesa
-
-RUN apk update && apk upgrade && apk add --no-cache openssh
-
-RUN echo 'PasswordAuthentication yes' >> /etc/ssh/sshd_config
-RUN adduser -s /bin/sh -D ${SSHUSER}
-RUN echo -n "${SSHUSERPASS}" | chpasswd
-
-EXPOSE 22
-
 WORKDIR /root
 
 COPY \
@@ -79,6 +67,10 @@ ARG FOUNDRY_VERSION
 ARG TARGETPLATFORM
 ARG VERSION
 
+ARG SSHUSERHOME=/home/mesa 
+ARG SSHUSER=mesa
+ARG SSHUSERPASS=mesa:mesa
+
 LABEL com.foundryvtt.version=${FOUNDRY_VERSION}
 LABEL org.opencontainers.image.authors="markf+github@geekpad.com"
 LABEL org.opencontainers.image.vendor="Geekpad"
@@ -109,12 +101,19 @@ RUN addgroup --system --gid ${FOUNDRY_UID} foundry \
   sed \
   su-exec \
   tzdata \
+  openssh \
   openssh-keygen \
   && npm install && echo ${VERSION} > image_version.txt
+
+RUN echo 'PasswordAuthentication yes' >> /etc/ssh/sshd_config
+RUN adduser -s /bin/sh -D ${SSHUSER}
+RUN echo -n "${SSHUSERPASS}" | chpasswd
 
 VOLUME ["/data"]
 # HTTP Server
 EXPOSE 30000/TCP
+# SSH
+EXPOSE 22
 # TURN Server
 # Not exposing TURN ports due to bug in Docker.
 # See: https://github.com/moby/moby/issues/11185
