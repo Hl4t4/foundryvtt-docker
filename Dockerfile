@@ -11,6 +11,7 @@ ARG TIMEZONE
 ARG SSHUSERHOME=/home/mesa 
 ARG SSHUSER=mesa
 ARG SSHUSERPASS=mesa:mesa
+ARG FOUNDRY_LICENSE_KEY
 
 FROM node:${NODE_IMAGE_VERSION} as compile-typescript-stage
 
