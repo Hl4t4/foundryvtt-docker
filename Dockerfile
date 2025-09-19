@@ -132,7 +132,7 @@ EXPOSE 30000/TCP
 # EXPOSE 33478/UDP
 # EXPOSE 49152-65535/UDP
 
-USER node
+#USER node
 ENTRYPOINT ["./entrypoint.sh"]
 CMD ["resources/app/main.mjs", "--port=30000", "--headless", "--noupdate",\
   "--dataPath=/data"]
