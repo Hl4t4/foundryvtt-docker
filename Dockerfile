@@ -48,25 +48,42 @@ COPY --from=compile-typescript-stage \
 # .placeholder file to mitigate https://github.com/moby/moby/issues/37965
 RUN mkdir dist && touch dist/.placeholder
 
-RUN \
-  --mount=type=secret,id=foundry_username,required=false \
-  --mount=type=secret,id=foundry_password,required=false \
-  npm install && \
-  if [ -f /run/secrets/foundry_username ] && [ -f /run/secrets/foundry_password ]; then \
-  ./authenticate.js "$(cat /run/secrets/foundry_username)" "$(cat /run/secrets/foundry_password)" cookiejar.json && \
-  presigned_url=$(./get_release_url.js --retry 5 cookiejar.json "${FOUNDRY_VERSION}") && \
-  DOWNLOAD_URL="${presigned_url}"; \
+RUN npm install && \
+  if [ -n "${FOUNDRY_USERNAME}" ] && [ -n "${FOUNDRY_PASSWORD}" ]; then \
+    ./authenticate.js "${FOUNDRY_USERNAME}" "${FOUNDRY_PASSWORD}" cookiejar.json && \
+    presigned_url=$(./get_release_url.js --retry 5 cookiejar.json "${FOUNDRY_VERSION}") && \
+    DOWNLOAD_URL="${presigned_url}"; \
   elif [ -n "${FOUNDRY_RELEASE_URL}" ]; then \
-  DOWNLOAD_URL="${FOUNDRY_RELEASE_URL}"; \
+    DOWNLOAD_URL="${FOUNDRY_RELEASE_URL}"; \
   else \
-  echo "No valid credentials or pre-signed URL provided. Skipping pre-installation."; \
+    echo "No valid credentials or pre-signed URL provided. Skipping pre-installation."; \
   fi && \
   if [ -n "${DOWNLOAD_URL}" ]; then \
-  apt-get update && apt-get install -y unzip wget && \
-  wget -O ${ARCHIVE} "${DOWNLOAD_URL}" && \
-  mkdir -p "dist/resources/app" && \
-  unzip -d "dist/resources/app" ${ARCHIVE}; \
+    apt-get update && apt-get install -y unzip wget && \
+    wget -O ${ARCHIVE} "${DOWNLOAD_URL}" && \
+    mkdir -p "dist/resources/app" && \
+    unzip -d "dist/resources/app" ${ARCHIVE}; \
   fi
+
+# RUN \
+#   --mount=type=secret,id=foundry_username,required=false \
+#   --mount=type=secret,id=foundry_password,required=false \
+#   npm install && \
+#   if [ -f /run/secrets/foundry_username ] && [ -f /run/secrets/foundry_password ]; then \
+#   ./authenticate.js "$(cat /run/secrets/foundry_username)" "$(cat /run/secrets/foundry_password)" cookiejar.json && \
+#   presigned_url=$(./get_release_url.js --retry 5 cookiejar.json "${FOUNDRY_VERSION}") && \
+#   DOWNLOAD_URL="${presigned_url}"; \
+#   elif [ -n "${FOUNDRY_RELEASE_URL}" ]; then \
+#   DOWNLOAD_URL="${FOUNDRY_RELEASE_URL}"; \
+#   else \
+#   echo "No valid credentials or pre-signed URL provided. Skipping pre-installation."; \
+#   fi && \
+#   if [ -n "${DOWNLOAD_URL}" ]; then \
+#   apt-get update && apt-get install -y unzip wget && \
+#   wget -O ${ARCHIVE} "${DOWNLOAD_URL}" && \
+#   mkdir -p "dist/resources/app" && \
+#   unzip -d "dist/resources/app" ${ARCHIVE}; \
+#   fi
 
 FROM node:${NODE_IMAGE_VERSION} AS final-stage
 
